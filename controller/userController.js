@@ -1,23 +1,15 @@
+const crypto = require('crypto')
 const userServices= require('../services/userServices')
-const jwt = require('jsonwebtoken')
-const {config} = require('../config/config')
 
-async function tokenGenerator(user) {
-    const payload = {id: user._id}
-    const token = await jwt.sign(payload, config.TOKEN_SECRET, {expiresIn: config.TOKEN_EXPIRE})
-    return token;
-}
+const sendToken = require('../utils/jwttoken')
+const User = require("../model/userModel");
 
 const registerUser = async (req,res,next)=>{
     const{name,email,password} = req.body
 
     try {
         const user = await userServices.register(name,email,password)
-        const token = await tokenGenerator(user);
-        res.status(201).json({
-            success :true,
-            token
-        })
+        await sendToken(user, 201, res)
     }catch (err)
     {
         console.log(err)
@@ -31,11 +23,7 @@ const loginUser = async (req,res,next)=>{
 
     try {
         const user = await userServices.loginUser(email,password)
-        const token = await tokenGenerator(user)
-        res.status(200).json({
-            success :true,
-            token
-        })
+         await sendToken(user, 200, res)
     }catch (err)
     {
         console.log(err)
@@ -44,7 +32,27 @@ const loginUser = async (req,res,next)=>{
 }
 
 
+
+const logoutUser = async (req,res,next)=>{
+    res.clearCookie('token',{
+        expires:new Date(Date.now()),
+        httpOnly:true
+    })
+    res.status(200).json({success:true,message:'logged Out Successful'})
+}
+
+const forgotPassword = async (req,res,next)=>{
+    const userEmail = req.body['email']
+    try{
+        const user = await userServices.storeResetPasswordToken(userEmail)
+        await  user.save()
+    }catch (){
+
+    }
+}
+
 module.exports ={
     registerUser,
-    loginUser
+    loginUser,
+    logoutUser
 }

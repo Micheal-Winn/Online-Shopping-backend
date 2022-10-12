@@ -30,8 +30,10 @@ const getProductDetails = async (req,res,next)=> {
 //Admin
 async function createProduct(req,res,next)
 {
-    const product = req.body;
+
     try{
+        req.body.user = req.user.id;
+        const product = req.body;
         const newitem = await productServices.newProduct(product)
         res.status(201).json({
             success: true,
@@ -64,8 +66,8 @@ async function updateProduct (req,res,next)
 //Admin
 const deleteProduct = async (req,res,next)=>
 {
-    const productId = req.params['id'];
     try {
+        const productId = req.params['id'];
         const product = await productServices.deleteById(productId)
         res.status(200).json({success:true,product})
     }catch (err){
