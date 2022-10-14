@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
         type:"String",
         unique: true,
         required: true,
+        trim: true,
         maxLength:30,
         minLength:4
     },
@@ -42,8 +43,7 @@ const userSchema = new mongoose.Schema({
         type:"String",
         default:'user'
     },
-    resetPasswordToken : "String",
-    resetPasswordExpire : "Date"
+ //token expires
 })
 
 module.exports = mongoose.model('User',userSchema)

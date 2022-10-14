@@ -77,6 +77,8 @@ const deleteProduct = async (req,res,next)=>
 }
 
 
+
+
 module.exports ={
     getAllProducts,
     getProductDetails,

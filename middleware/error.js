@@ -11,6 +11,25 @@ const ErrorHandler = require('../utils/errorHandler')
          err = new ErrorHandler(message,400)
      }
 
+     //Moongoose duplicate key error
+
+     if(err.code === 11000){
+         const message = `Duplicate ${Object.keys(err.key)} Entered`
+         err = new ErrorHandler(message,400)
+     }
+
+     if(err.name === 'JsonWebTokenError')
+     {
+         const message = `Json Web Token is invalid ,try again`
+         err = new ErrorHandler(message,400)
+     }
+
+     if(err.name === 'TokenExpiredError')
+     {
+         const message = `Json Web Token is Expired,try again`
+         err = new ErrorHandler(message,400)
+     }
+
     res.status(err.statusCode).json({
         success:false,
         error :err.stack
