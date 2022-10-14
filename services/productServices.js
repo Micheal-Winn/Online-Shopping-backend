@@ -39,6 +39,13 @@ const deleteById = async (productId)=>
     return deleteProduct
 }
 
+const searchProduct = async (productId)=>
+{
+    const searchProduct = product.findById(productId)
+   return searchProduct
+
+}
+
 
 module.exports = {
 
@@ -46,5 +53,6 @@ module.exports = {
     findById,
     newProduct,
     updateById,
-    deleteById
+    deleteById,
+    searchProduct
 }

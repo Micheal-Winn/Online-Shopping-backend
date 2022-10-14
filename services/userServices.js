@@ -99,6 +99,16 @@ const updateUserProfile = async (id,userData)=>
     return user;
 
 }
+const findAllUsers = async ()=>{
+    const users = await User.find()
+    return users;
+}
+
+// const deleteUser = async (id)=>
+// {
+//     const user = User.findById(id)
+//
+// }
 
 module.exports ={
     register,
@@ -108,6 +118,7 @@ module.exports ={
     updateUserInfo,
     getUserInfoById,
     updatePassword,
-    updateUserProfile
+    updateUserProfile,
+    findAllUsers
 
 }

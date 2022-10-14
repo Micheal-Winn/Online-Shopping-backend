@@ -34,10 +34,10 @@ async function createProduct(req,res,next)
     try{
         req.body.user = req.user.id;
         const product = req.body;
-        const newitem = await productServices.newProduct(product)
+        const newItem = await productServices.newProduct(product)
         res.status(201).json({
             success: true,
-            newitem
+            newItem
         })
     }catch (err){
         console.log(err)
@@ -76,6 +76,49 @@ const deleteProduct = async (req,res,next)=>
 
 }
 
+//Creating rewiew or update the review
+
+const createProductReview = async (req,res,next)=>
+{
+    try {
+        const {rating , comment, productId } = req.body;
+        const review = {
+            user : req.user.id,
+            name : req.user.name,
+            rating : Number(rating),
+            comment
+        }
+        const product = await productServices.searchProduct(productId)
+        console.log('product ' ,product)
+        const isReviewed = product.reviews.find(rev=>rev.user.toString() === req.user.id.toString())
+        if(isReviewed){
+            product.reviews.forEach(rev => {
+                if(rev=>rev.user.toString() === req.user.id.toString()){
+                    (rev.rating = rating)
+                    (rev.comment = comment)
+                }
+            })
+        }else {
+            product.reviews.push(review);
+            product.numOfReviews = product.reviews.length
+        }
+        //5+5+2+2 = 14 * 4(review.length)_
+        let avg = 0;
+        product.reviews.forEach((rev) => {
+            avg += rev.rating;
+        });
+
+        product.ratings = avg / product.reviews.length;
+        await product.save();
+        res.status(201).json({
+            success :true,
+            product
+        })
+    }catch (e) {
+        res.status(400).json({message : e.message})
+    }
+}
+
 
 
 
@@ -84,5 +127,6 @@ module.exports ={
     getProductDetails,
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    createProductReview
 }

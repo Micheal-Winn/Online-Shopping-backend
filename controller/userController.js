@@ -135,17 +135,79 @@ const updateUserProfileData = async (req,res,next)=>
 {
     //frontend ka nay validat loat yan
            const userId = req.user.id;
-           const {name ,email} = req.body
-           const userData = { name,  email}
+           const userData = {
+               name : req.body.name,
+               email : req.body.email
+           }
            const updateUser = await userServices.updateUserProfile(userId, userData)
            res.status(200).json({
                success: true,
                updateUser
            })
-
-
+}
+//get all user (admin)
+const getAllUsers = async (req,res,next)=>
+{
+    const users = await userServices.findAllUsers()
+    res.status(200).json({success:true,users})
 }
 
+//get single user (admin)
+const getSingleUserById = async (req,res,next)=>
+{
+    const userId = req.params.id;
+    const user = await userServices.getUserInfoById(userId)
+    if(!user){
+        return next(res.status(400).json({
+            success :false,
+            message : 'User does not exist with Id'
+        }))
+    }
+    res.status(200).json({
+        success:true,
+        user
+    })
+}
+
+//updatr User Roloe --admin
+const updateUserRole = async (req,res,next)=>
+{
+    //frontend ka nay validat loat yan
+    const userId = req.params.id;
+    const userData = {
+        name : req.body.name,
+        email : req.body.email,
+        role : req.body.role
+    }
+    const updateUser = await userServices.updateUserProfile(userId, userData)
+    res.status(200).json({
+        success: true,
+        updateUser
+    })
+}
+
+//delete user by admin
+
+const deleteUser = async (req,res,next)=>
+{
+    //frontend ka nay validat loat yan
+    const userId = req.params.id;
+    const user = await userServices.getUserInfoById(userId)
+
+    if(!user){
+        return next(res.status(400).json({
+            success :false,
+            message : 'User does not exist with Id'
+        }))
+    }
+    await user.remove()
+
+    res.status(200).json({
+        success: true,
+        message : 'User delete successfully',
+        user
+    })
+}
 
 module.exports ={
     registerUser,
@@ -155,7 +217,11 @@ module.exports ={
     resetPassword,
     getUserDetail,
     updatePassword,
-    updateUserProfileData
+    updateUserProfileData,
+    getAllUsers,
+    getSingleUserById,
+    updateUserRole,
+    deleteUser
 }
 
 
