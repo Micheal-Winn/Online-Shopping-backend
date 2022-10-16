@@ -2,23 +2,30 @@ const product = require('../model/products')
 const ApiFeatures = require('../utils/apifeatures')
 //Admin
 async function getAll(req){
-    const resultPerPage = 5;
+    const resultPerPage = 2;
     const productCount = await product.countDocuments()
     const apiFeature = new ApiFeatures(
         product.find(),
         req.query)
         .search()
         .filter()
-        .pagination(resultPerPage)
     ;
     // return product.find()
-    const products = await apiFeature.query
-    return products;
+    let products = await apiFeature.query
+    let filteredProductsCount = products.length;
+    apiFeature.pagination(resultPerPage)
+    return{
+        products,
+        productCount,
+        resultPerPage,
+        filteredProductsCount
+
+    };
 }
 
 const findById = async (productId)=>{
      const detailProduct = await product.findById(productId)
-    return {detailProduct,productCount}
+    return detailProduct
 }
 //Admin
 async function newProduct(req)
@@ -46,7 +53,6 @@ const searchProduct = async (productId)=>
 
 }
 
-
 module.exports = {
 
     getAll,
@@ -54,5 +60,6 @@ module.exports = {
     newProduct,
     updateById,
     deleteById,
-    searchProduct
+    searchProduct,
+
 }

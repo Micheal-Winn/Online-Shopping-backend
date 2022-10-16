@@ -119,6 +119,56 @@ const createProductReview = async (req,res,next)=>
     }
 }
 
+const getAllReviewsOfAProduct = async (req,res,next)=>
+{
+    try {
+        const productId = req.query.id
+        const product = await productServices.findById(productId)
+        if(!product) throw Error('product cannot be found')
+        res.status(200).json({
+            success :true,
+            reviews : product.reviews
+        })
+    }catch (e) {
+        res.status(400).json({
+            success : false,
+            message : e.message
+        })
+    }
+}
+
+const deleteReview = async (req,res,next)=>
+{
+    try {
+        const productId = req.query.id
+        const reviewId = req.query.reviewId //(should productID)
+        const product = await productServices.findById(productId)
+        if(!product) throw Error('review cannot be found')
+
+        const reviews = product.reviews.filter(rev=> rev._id.toString() !== reviewId.toString())
+        let avg = 0;
+        reviews.forEach((rev) => {
+            avg += rev.rating;
+        });
+
+        const ratings = avg / reviews.length;
+        const numOfReviews = reviews.length;
+
+        const newReviewObj = {
+            reviews,
+            ratings,
+            numOfReviews
+        }
+        const updateReview = await productServices.updateById(productId,newReviewObj)
+        res.status(200).json({
+            success :true,
+            message : 'delete Review Successfully',
+            review : updateReview
+        })
+    }catch (e) {
+        res.status(400).json({success : false,message : e.message})
+    }
+}
 
 
 
@@ -128,5 +178,7 @@ module.exports ={
     createProduct,
     updateProduct,
     deleteProduct,
-    createProductReview
+    createProductReview,
+    getAllReviewsOfAProduct,
+    deleteReview
 }
