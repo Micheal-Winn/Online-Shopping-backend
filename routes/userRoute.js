@@ -15,6 +15,6 @@ router.put('/password/reset/:id/:token',userController.resetPassword)
 router.put('/password/update',isAuthenticatedUser,userController.updatePassword)
 router.put('/me/update',isAuthenticatedUser,userController.updateUserProfileData)
 router.delete('/admin/user/:id',isAuthenticatedUser,isAdmin,userController.deleteUser)
-
+console.log('hello')
 
 module.exports = router;
