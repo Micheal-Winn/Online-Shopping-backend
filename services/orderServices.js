@@ -8,17 +8,32 @@ const createOrder = async (req)=>
 
 const getSingleOrder = async (id)=>
 {
-    const order = await Order.findById(id).populate('User','name email')
+    const order = await Order.findById(id).populate('user','name email')
     return order
 }
-const findAllOrders = async (id)=>
+const myOrders = async (id)=>
 {
-    const order = await Order.find(id)
+    const order = await Order.find({user:id})
     return order
+}
+
+const findAllOrders = async ()=>
+{
+    const orders = await Order.find()
+    return orders
+}
+
+const getOrderById = async (id)=>
+{
+    const orders = await Order.findById(id)
+    if(!orders) throw Error("Orders cannot be found")
+    return orders
 }
 
 module.exports = {
     createOrder,
     getSingleOrder,
-    findAllOrders
+    myOrders,
+    findAllOrders,
+    getOrderById
 }
