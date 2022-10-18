@@ -9,6 +9,7 @@ router.get('/:id',isAuthenticatedUser,orderController.getSingleOrder)
 router.post('/new',isAuthenticatedUser,orderController.createOrder)
 router.put('/admin/:id',isAuthenticatedUser,isAdmin,orderController.updateOrder)
 router.delete('/admin/:id',isAuthenticatedUser,isAdmin,orderController.deleteOrder)
+console.log('test')
 
 
 module.exports = router
